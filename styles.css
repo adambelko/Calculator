@@ -1,8 +1,7 @@
 main {
     font-family: 'Roboto', sans-serif;
     margin-top: 200px;
-    width: 430px;
-    height: 630px;
+    width: 400px;
     margin-left: auto;
     margin-right: auto;
     background-color: rgb(190, 190, 190);
@@ -12,14 +11,30 @@ main {
 
 .calculator {
     padding: 25px;
-    font-size: 30px
+    display: flex;
+    flex-direction: column
 }
 
 .screen {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    align-items: flex-end;
     background-color: azure;
-    height: 100px;
+    height: 110px;
     border-radius: 10px;
     border: 2px solid black;
+}
+
+.screenTop {
+    font-size: 20px;
+    padding-right: 15px;
+    padding-top: 10px;
+}
+
+.screenBottom {
+    font-size: 35px;
+    padding: 15px;
 }
 
 .buttons,
@@ -28,13 +43,14 @@ main {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
-    font-size: 30px;
+    font-size: 15px;
 }
 
 .btn {
-    padding: 30px;
+    padding: 20px;
     border-radius: 5px;
     border: 2px solid black;
+    font-size: 22px;
 }
 
 .clearDeleteBtn {
