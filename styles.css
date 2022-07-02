@@ -46,7 +46,12 @@ main {
     font-size: 15px;
 }
 
-.btn {
+.number,
+.clear,
+.delete,
+.operator,
+.equals,
+.decimal {
     padding: 20px;
     border-radius: 5px;
     border: 2px solid black;
@@ -65,6 +70,7 @@ main {
     background-color: rgb(252, 145, 145);
 }
 
-.operator {
+.operator,
+.equals {
     background-color: rgb(253, 202, 108);
 }
