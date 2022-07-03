@@ -10,6 +10,14 @@ const displayBottom = document.createElement("span");
 screenTop.appendChild(displayTop);
 screenBottom.appendChild(displayBottom);
 
+for (x of calcNumber) {
+    x.addEventListener("click", e => getNumber(e.currentTarget.id)); // targeting "id" of a clicked element("number-*")
+}
+
+for (x of calcOperator){
+    x.addEventListener("click", e => getOperator(e.currentTarget.id))
+}
+
 let operator;
 let number;
 let numberTwo;
@@ -18,16 +26,10 @@ let num2;
 let input = [];
 let inputTwo = [];
 
-
-function getNumber() {
-    for (const x of calcNumber) {
-        x.addEventListener("click", e => {
-            number = e.currentTarget.id         // targeting "id" of a clicked element("number-*")
-            number = number.replace(/\D/g, ""); //extracting text from my "id" to get number only
-            input.push(number);
-            displayBottom.textContent = `${input.join("")}`;
-        });
-    }
+function getNumber(number) {        
+    number = number.replace(/\D/g, ""); //extracting text from my "id" to get number only
+    input.push(number);
+    displayBottom.textContent = `${input.join("")}`;
 }
 
 function getSecondNumber() {
@@ -44,19 +46,23 @@ function getSecondNumber() {
     }
 }
 
-function getOperator() {
-    for (const x of calcOperator) {
-        x.addEventListener("click", e => {
-            if (e.currentTarget.id === "add") operator = "+";
-            num1 = Number(input.join(""));
-            displayTop.textContent = `${num1}` + " " + `${operator}` + " "; 
-            displayBottom.textContent = `${num1}`;
-            getSecondNumber()
-        })
-    }
+function getOperator(para) {
+    if (para === "add") operator = "+";
+    else if (para === "subtract") operator = "-";
+    else if (para === "multiply") operator = "x";
+    else if (para === "divide") operator = "/";
+    num1 = Number(input.join(""));
+    displayTop.textContent = `${num1}` + " " + `${operator}` + " "; 
+    displayBottom.textContent = `${num1}`;
+    getSecondNumber()
 }
 
-
+function operate(operator, num1, num2) {
+    if (operator === "+") sum(num1, num2);
+    else if (operator === "-") subtract(num1, num2);
+    else if (operator === "x") multiply(num1, num2);
+    else if (operator === "/") divide(num1, num2);
+}
 
 function sum(a, b) {
     const result = a + b;
@@ -65,23 +71,16 @@ function sum(a, b) {
 
 function subtract(a, b) { 
     const result = a - b;
-    return result;
+    displayBottom.textContent = `${result}`;
 }
 
 function multiply(a, b) {
     const result = a * b;
-    return result;
+    displayBottom.textContent = `${result}`;
 }
 
 function divide(a, b) {
     const result = a / b;
-    return result;
+    displayBottom.textContent = `${result}`;
 }
 
-
-function operate(operator, num1, num2) {
-    if (operator === "+") sum(num1, num2);
-}
-
-getNumber();
-getOperator();
