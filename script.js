@@ -19,25 +19,25 @@ for (x of calcOperator){
 }
 
 let operator;
-let number;
-let numberTwo;
 let num1;
 let num2;
 let input = [];
 let inputTwo = [];
+let sumResult;
 
-function getNumber(number) {        
+function getNumber(number) {      
     number = number.replace(/\D/g, ""); //extracting text from my "id" to get number only
-    input.push(number);
-    displayBottom.textContent = `${input.join("")}`;
+    input.push(number);                 // making an array of numbers
+    displayBottom.textContent = `${input.join("")}`; // joining an array together
 }
 
 function getSecondNumber() {
+    let secondNumber;
     for (const x of calcNumber) {
         x.addEventListener("click", e => {
-            numberTwo = e.currentTarget.id         
-            numberTwo = numberTwo.replace(/\D/g, "");
-            inputTwo.push(numberTwo);
+            secondNumber = e.currentTarget.id         
+            secondNumber = secondNumber.replace(/\D/g, "");
+            inputTwo.push(secondNumber);
             num2 = Number(inputTwo.join(""));
             displayBottom.textContent = `${inputTwo.join("")}`;
             displayTop.textContent = `${num1}` + " " + `${operator}` + " " + `${num2}`;
@@ -51,6 +51,7 @@ function getOperator(para) {
     else if (para === "subtract") operator = "-";
     else if (para === "multiply") operator = "x";
     else if (para === "divide") operator = "/";
+
     num1 = Number(input.join(""));
     displayTop.textContent = `${num1}` + " " + `${operator}` + " "; 
     displayBottom.textContent = `${num1}`;
@@ -65,8 +66,8 @@ function operate(operator, num1, num2) {
 }
 
 function sum(a, b) {
-    const result = a + b;
-    displayBottom.textContent = `${result}`;
+    sumResult = a + b;
+    displayBottom.textContent = `${sumResult}`;
 }
 
 function subtract(a, b) { 
