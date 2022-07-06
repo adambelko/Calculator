@@ -11,77 +11,69 @@ screenTop.appendChild(displayTop);
 screenBottom.appendChild(displayBottom);
 
 for (x of calcNumber) {
-    x.addEventListener("click", e => getNumber(e.currentTarget.id)); // targeting "id" of a clicked element("number-*")
+    x.addEventListener("click", e => {
+        showNumber(e.target.innerText)
+        getNumber(e.target.innerText)
+    });
 }
 
 for (x of calcOperator){
-    x.addEventListener("click", e => getOperator(e.currentTarget.id))
+    x.addEventListener("click", e => getOperator(e.target.innerText));
 }
 
-let operator;
+calcEquals.addEventListener("click", operate);
+
 let num1;
 let num2;
-let input = [];
-let inputTwo = [];
-let sumResult;
+let currentInput = [];
+let resetDisplay = false;
+let operator
 
-function getNumber(number) {      
-    number = number.replace(/\D/g, ""); //extracting text from my "id" to get number only
-    input.push(number);                 // making an array of numbers
-    displayBottom.textContent = `${input.join("")}`; // joining an array together
+function getNumber(currentNumber) {
+    currentInput.push(currentNumber);           
+} 
+
+function showNumber(number) {
+    if (resetDisplay === true) displayBottom.textContent = "";
+    displayBottom.textContent += `${number}`; 
 }
 
-function getSecondNumber() {
-    let secondNumber;
-    for (const x of calcNumber) {
-        x.addEventListener("click", e => {
-            secondNumber = e.currentTarget.id         
-            secondNumber = secondNumber.replace(/\D/g, "");
-            inputTwo.push(secondNumber);
-            num2 = Number(inputTwo.join(""));
-            displayBottom.textContent = `${inputTwo.join("")}`;
-            displayTop.textContent = `${num1}` + " " + `${operator}` + " " + `${num2}`;
-            calcEquals.addEventListener("click", e => operate(operator, num1, num2))
-        });
-    }
-}
-
-function getOperator(para) {
-    if (para === "add") operator = "+";
-    else if (para === "subtract") operator = "-";
-    else if (para === "multiply") operator = "x";
-    else if (para === "divide") operator = "/";
-
-    num1 = Number(input.join(""));
+function getOperator(currentOperator) {
+    operator = currentOperator;
+    num1 = Number(currentInput.join(""));
+    console.log(num1)
+    console.log(currentOperator);
+    while (currentInput.length) currentInput.pop();
     displayTop.textContent = `${num1}` + " " + `${operator}` + " "; 
-    displayBottom.textContent = `${num1}`;
-    getSecondNumber()
+    resetDisplay = true;
 }
 
-function operate(operator, num1, num2) {
-    if (operator === "+") sum(num1, num2);
-    else if (operator === "-") subtract(num1, num2);
-    else if (operator === "x") multiply(num1, num2);
-    else if (operator === "/") divide(num1, num2);
+function operate() {
+    num2 = Number(currentInput.join(""));
+    console.log(num2)
+    displayTop.textContent = `${num1}` + " " + `${operator}` + " " + `${num2}`;
+    displayBottom.textContent = processCalculation()
+}
+ 
+function processCalculation() {
+    if (operator === "+") return sum(num1, num2);
+    if (operator === "-") return subtract(num1, num2);
+    if (operator === "÷") return divide(num1, num2);
+    if (operator === "x") return multiply(num1, num2);
 }
 
 function sum(a, b) {
-    sumResult = a + b;
-    displayBottom.textContent = `${sumResult}`;
+    return a + b;
 }
 
 function subtract(a, b) { 
-    const result = a - b;
-    displayBottom.textContent = `${result}`;
+    return a - b;
 }
 
 function multiply(a, b) {
-    const result = a * b;
-    displayBottom.textContent = `${result}`;
+    return a * b;
 }
 
 function divide(a, b) {
-    const result = a / b;
-    displayBottom.textContent = `${result}`;
+    return a / b;
 }
-
