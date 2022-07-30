@@ -12,6 +12,11 @@ const displayBottom = document.createElement("span");
 screenTop.appendChild(displayTop);
 screenBottom.appendChild(displayBottom);
 
+calcEquals.addEventListener("click", operate);
+clearAll.addEventListener("click", clearDisplay);
+deleteNum.addEventListener("click", deleteNumber);
+document.addEventListener("keydown", e => keyboardListener(e));
+
 for (x of calcNumber) {
     x.addEventListener("click", e => {
         showNumber(e.target.innerText);
@@ -23,40 +28,33 @@ for (x of calcOperator){
     x.addEventListener("click", e => getOperator(e.target.innerText));
 }
 
-calcEquals.addEventListener("click", operate);
-clearAll.addEventListener("click", clearDisplay);
-deleteNum.addEventListener("click", deleteNumber);
-document.addEventListener("keydown", e => keyboardListener(e));
-
 let num1;
 let num2;
 let currentInput = [];
 let resetDisplay = false;
 let operator = null;
-let showOperator = null;
+let nextOperator = null;
 let result = null;
-
-function getNumber(currentNumber) {
-    currentInput.push(currentNumber);           
-} 
 
 function showNumber(number) {
     if (resetDisplay === true) resetDisplayFn();
     displayBottom.textContent += `${number}`; 
 }
 
+function getNumber(currentNumber) {
+    currentInput.push(currentNumber);           
+} 
+
 function getOperator(currentOperator) {
     if (operator !== null) {
-        showOperator = currentOperator;
+        nextOperator = currentOperator;          // next operators
         return operate();
     } else if (result !== null) {
-        operator = currentOperator; //here is problem 
-        (console.log("operator " + operator))
-        num2 = Number(currentInput.join(""));
-        return operate()
+        nextOperator = currentOperator
+        return operate();
     } else {
         num1 = Number(currentInput.join(""));
-        operator = currentOperator;
+        operator = currentOperator;             // first operator declared
         console.log(num1);
         console.log(currentOperator);
         while (currentInput.length) currentInput.pop();
@@ -67,40 +65,35 @@ function getOperator(currentOperator) {
 
 function operate() {
     if (result !== null) {
-        console.log("num2 " + num2)
-        console.log("showOperator " + showOperator);
-        displayTop.textContent = `${test(result, num2)}` + " " + `${operator}`;
-        displayBottom.textContent = test(result, num2);
-        result = test(result, num2);
+        num2 = Number(currentInput.join(""));
+        console.log("nextOperator " + nextOperator);
+        displayTop.textContent = `${processCalculation(operator, result, num2)}` + " " + `${nextOperator}`;
+        displayBottom.textContent = processCalculation(operator, result, num2);
+        result = processCalculation(operator, result, num2);
         while (currentInput.length) currentInput.pop();
+        operator = nextOperator;
+        nextOperator = null;
         resetDisplay = true;
-        operator = null;
 
-    } else {
+    } else {                                    // initial (num) [operator] (num)
         num2 = Number(currentInput.join(""));
         console.log(num2);
-        displayTop.textContent = `${processCalculation(num1, num2)}` + " " + `${showOperator}`;
-        displayBottom.textContent = processCalculation(num1, num2);
-        result = processCalculation(num1, num2);
+        displayTop.textContent = `${processCalculation(operator, num1, num2)}` + " " + `${nextOperator}`;
+        displayBottom.textContent = processCalculation(operator, num1, num2);
+        result = processCalculation(operator, num1, num2);
         while (currentInput.length) currentInput.pop();
-        console.log("result else operate " + result);
-        operator = null;
+        console.log("equals " + result);
+        operator = nextOperator;
+        nextOperator = null;
         resetDisplay = true;
     }
 }
-
-function test(num1, num2) {
-    if (showOperator === "+") return sum(num1, num2);
-    if (showOperator === "-") return subtract(num1, num2);
-    if (showOperator === "÷") return divide(num1, num2);
-    if (showOperator === "x") return multiply(num1, num2);
-}
  
-function processCalculation(num1, num2) {
-    if (operator === "+") return sum(num1, num2);
-    if (operator === "-") return subtract(num1, num2);
-    if (operator === "÷") return divide(num1, num2);
-    if (operator === "x") return multiply(num1, num2);
+function processCalculation(selectedOperator, num1, num2) {
+    if (selectedOperator === "+") return sum(num1, num2);
+    if (selectedOperator === "-") return subtract(num1, num2);
+    if (selectedOperator === "÷") return divide(num1, num2);
+    if (selectedOperator === "x") return multiply(num1, num2);
 }
 
 function sum(a, b) {
