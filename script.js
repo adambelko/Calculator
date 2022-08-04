@@ -1,99 +1,72 @@
-const calcNumber = document.querySelectorAll(".number"); 
-const calcOperator = document.querySelectorAll(".operator");
-const calcDecimal = document.querySelector(".decimal");
-const calcEquals = document.querySelector(".equals");
+"use strict";
+const classNumber = document.querySelectorAll(".number"); 
+const classOperator = document.querySelectorAll(".operator");
+const decimalBtn = document.querySelector(".decimal");
+const equalsBtn = document.querySelector(".equals");
 const screenTop = document.querySelector(".screenTop");
 const screenBottom = document.querySelector(".screenBottom");
-const clearAll = document.querySelector(".clear");
-const deleteNum = document.querySelector(".delete");
+const clearBtn = document.querySelector(".clear");
+const deleteBtn = document.querySelector(".delete");
 
 const displayTop = document.createElement("span");
 const displayBottom = document.createElement("span");
 screenTop.appendChild(displayTop);
 screenBottom.appendChild(displayBottom);
 
-calcEquals.addEventListener("click", operate);
-clearAll.addEventListener("click", clearDisplay);
-deleteNum.addEventListener("click", deleteNumber);
+equalsBtn.addEventListener("click", operate);
+clearBtn.addEventListener("click", clearDisplay);
+deleteBtn.addEventListener("click", deleteLastNumber);
 document.addEventListener("keydown", e => keyboardListener(e));
 
-for (x of calcNumber) {
+for (let x of classNumber) {
     x.addEventListener("click", e => {
         showNumber(e.target.innerText);
-        getNumber(e.target.innerText);
+        saveNumber(e.target.innerText);
     });
 }
 
-for (x of calcOperator){
+for (let x of classOperator){
     x.addEventListener("click", e => getOperator(e.target.innerText));
 }
 
 let num1;
 let num2;
-let currentInput = [];
-let resetDisplay = false;
+let input = [];
+let resetBottomDisplay = false;
 let operator = null;
-let nextOperator = null;
-let result = null;
 
 function showNumber(number) {
-    if (resetDisplay === true) resetDisplayFn();
+    if (resetBottomDisplay === true) resetDisplay();
     displayBottom.textContent += `${number}`; 
 }
 
-function getNumber(currentNumber) {
-    currentInput.push(currentNumber);           
+function saveNumber(selectedNumber) {
+    input.push(selectedNumber);
 } 
 
-function getOperator(currentOperator) {
-    if (operator !== null) {
-        nextOperator = currentOperator;          // next operators
-        return operate();
-    } else if (result !== null) {
-        nextOperator = currentOperator
-        return operate();
-    } else {
-        num1 = Number(currentInput.join(""));
-        operator = currentOperator;             // first operator declared
-        console.log(num1);
-        console.log(currentOperator);
-        while (currentInput.length) currentInput.pop();
-        displayTop.textContent = `${num1}`+ " " + `${operator}` + " "; 
-        resetDisplay = true;
-    }
+function getOperator(selectedOperator) {
+    if (operator !== null ) operate();
+    if (num1 === undefined) num1 = Number(input.join(""));
+    operator = selectedOperator;
+    while (input.length) input.pop();
+    displayTop.textContent = num1 + " " + operator;
+    resetBottomDisplay = true;
 }
 
-function operate() {
-    if (result !== null) {
-        num2 = Number(currentInput.join(""));
-        console.log("nextOperator " + nextOperator);
-        displayTop.textContent = `${processCalculation(operator, result, num2)}` + " " + `${nextOperator}`;
-        displayBottom.textContent = processCalculation(operator, result, num2);
-        result = processCalculation(operator, result, num2);
-        while (currentInput.length) currentInput.pop();
-        operator = nextOperator;
-        nextOperator = null;
-        resetDisplay = true;
-
-    } else {                                    // initial (num) [operator] (num)
-        num2 = Number(currentInput.join(""));
-        console.log(num2);
-        displayTop.textContent = `${processCalculation(operator, num1, num2)}` + " " + `${nextOperator}`;
-        displayBottom.textContent = processCalculation(operator, num1, num2);
-        result = processCalculation(operator, num1, num2);
-        while (currentInput.length) currentInput.pop();
-        console.log("equals " + result);
-        operator = nextOperator;
-        nextOperator = null;
-        resetDisplay = true;
-    }
+function operate() {           
+    num2 = Number(input.join(""));
+    displayTop.textContent = calculate(operator, num1, num2);
+    displayBottom.textContent = calculate(operator, num1, num2);
+    num1 = calculate(operator, num1, num2);
+    while (input.length) input.pop();
+    resetBottomDisplay = true;
 }
  
-function processCalculation(selectedOperator, num1, num2) {
-    if (selectedOperator === "+") return sum(num1, num2);
-    if (selectedOperator === "-") return subtract(num1, num2);
-    if (selectedOperator === "÷") return divide(num1, num2);
-    if (selectedOperator === "x") return multiply(num1, num2);
+function calculate(operator, num1, num2) {
+    if (operator === "+") return sum(num1, num2);
+    if (operator === "-") return subtract(num1, num2);
+    if (operator === "÷" || operator === "/") return divide(num1, num2);
+    if (operator === "x") return multiply(num1, num2);
 }
 
 function sum(a, b) {
@@ -115,32 +88,33 @@ function divide(a, b) {
 function clearDisplay() {
     displayTop.textContent = "";
     displayBottom.textContent = "";
+    while (input.length) input.pop();
     operator = null;
-    result = null;
-    while (currentInput.length) currentInput.pop();
-    if (num1) while (num1.length) num1.pop();
-    if (num2) while (num2.length) num2.pop();
+    num1 = undefined;
+    num2 = undefined;
 }
 
-function deleteNumber() {
-    currentInput.pop();
-    number = Number(currentInput.join(""));
+function deleteLastNumber() {
+    input.pop();
+    const number = Number(input.join(""));
     displayBottom.textContent = number;
 }
 
-function resetDisplayFn() {
+function resetDisplay() {
     displayBottom.textContent = "";
-    resetDisplay = false;
+    resetBottomDisplay = false;
 }
 
 function keyboardListener(e) {
     if (e.key >= 0 && e.key <= 9) {
         showNumber(e.key);
-        getNumber(e.key);
+        saveNumber(e.key);
     }
-    if (e.key === "+" || e.key === "-" || e.key === "*" || e.key === "/") getOperator(e.key);
-    // if (e.key === "Enter" || e.key ==="=")
-    // if (e.key === ".") 
-    // if (e.key === "Backspace" || e.key === "Delete") deleteNumber();
+    if (e.key === "*") getOperator("x");
+    if (e.key === "/") getOperator("÷");
+    if (e.key === "+" || e.key === "-") getOperator(e.key);
+    if (e.key === "Enter" || e.key === "=") operate();
+    // if (e.key === ".") getOperator(e.key);
+    if (e.key === "Backspace" || e.key === "Delete") deleteLastNumber();
     if (e.key === "Escape") clearDisplay();
 }
