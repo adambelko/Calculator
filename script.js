@@ -115,9 +115,13 @@ function clearDisplay() {
 }
 
 function deleteLastNumber() {
-    input.pop();
-    const number = Number(input.join(""));
-    displayBottom.textContent = number;
+    if (input.length > 0) {
+        input.pop();
+        const number = Number(input.join(""));
+        displayBottom.textContent = number;
+    } else {
+        displayBottom.textContent = "";
+    }
 }
 
 function resetDisplay() {
